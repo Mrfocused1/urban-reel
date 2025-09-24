@@ -11,6 +11,7 @@ interface HyperTextProps {
   framerProps?: Variants;
   className?: string;
   animateOnLoad?: boolean;
+  style?: React.CSSProperties;
 }
 
 const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -27,6 +28,7 @@ export function HyperText({
   },
   className,
   animateOnLoad = true,
+  style,
 }: HyperTextProps) {
   const [displayText, setDisplayText] = useState(text.split(""));
   const [trigger, setTrigger] = useState(false);
@@ -72,6 +74,7 @@ export function HyperText({
     <div
       className="flex scale-100 cursor-default overflow-hidden py-2"
       onMouseEnter={triggerAnimation}
+      style={style}
     >
       <AnimatePresence mode="wait">
         {displayText.map((letter, i) => (

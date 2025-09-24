@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Toaster } from '@/components/ui/sonner'
 import { signInAnonymously, onAuthStateChanged, User } from 'firebase/auth'
@@ -15,7 +14,6 @@ import VideoForm from '@/components/VideoForm'
 import DigitalSerenityEffects from '@/components/DigitalSerenityEffects'
 import { HyperText } from '@/components/ui/hyper-text'
 import { toast } from 'sonner'
-import { testFirebaseConnection } from '@/lib/firebase-test'
 import Link from 'next/link'
 
 export default function Home() {
@@ -100,10 +98,6 @@ export default function Home() {
     setIsPlayerModalOpen(true)
   }
 
-  const handleAddVideo = () => {
-    setEditingVideo(null)
-    setIsFormModalOpen(true)
-  }
 
   const handleEditVideo = (video: Video) => {
     setEditingVideo(video)
@@ -119,17 +113,6 @@ export default function Home() {
     loadVideos() // Reload videos after delete
   }
 
-  const testConnection = async () => {
-    console.log('Testing Firebase connection manually...')
-    const result = await testFirebaseConnection()
-    if (result.success) {
-      toast.success(`Connected! Found ${result.count} videos in Firebase`)
-      console.log('Firebase test result:', result)
-    } else {
-      toast.error('Firebase connection failed')
-      console.error('Firebase test error:', result.error)
-    }
-  }
 
   const getThumbnailUrl = (video: Video) => {
     if (video.thumbnail) return video.thumbnail
