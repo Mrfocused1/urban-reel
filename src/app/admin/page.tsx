@@ -237,32 +237,32 @@ export default function AdminPage() {
                     </div>
                   )}
                 </CardHeader>
-                <CardContent className="px-1 py-0">
-                  <CardTitle className="text-black text-xs font-medium line-clamp-1 word-animate mb-0" data-delay="0">
+                <CardContent className="px-0.5 py-0">
+                  <CardTitle className="text-black text-xs font-medium line-clamp-1 word-animate leading-tight" data-delay="0">
                     {video.title}
                   </CardTitle>
-                  <CardDescription className="text-black text-xs line-clamp-1 mb-0">
+                  <CardDescription className="text-black text-xs line-clamp-1 leading-tight">
                     {video.description}
                   </CardDescription>
-                  <div className="flex justify-end mb-0">
-                    <span className="text-black text-xs">
+                  <div className="flex justify-end">
+                    <span className="text-black text-xs leading-tight">
                       {video.createdAt?.toDate().toLocaleDateString()}
                     </span>
                   </div>
 
                   {/* Admin Actions */}
-                  <div className="flex gap-0.5 mt-0.5" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex gap-0.5 mt-1" onClick={(e) => e.stopPropagation()}>
                     <Button
                       onClick={() => handleEditVideo(video)}
                       size="sm"
-                      className="flex-1 bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg text-xs py-0.5 h-5"
+                      className="flex-1 bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg text-xs py-0 h-4 leading-tight"
                     >
                       Edit
                     </Button>
                     <Button
                       onClick={() => handleDeleteVideo(video)}
                       size="sm"
-                      className="flex-1 bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg text-xs py-0.5 h-5"
+                      className="flex-1 bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg text-xs py-0 h-4 leading-tight"
                     >
                       Delete
                     </Button>

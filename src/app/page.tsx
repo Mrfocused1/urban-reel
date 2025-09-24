@@ -270,15 +270,15 @@ export default function Home() {
                     </div>
                   )}
                 </CardHeader>
-                <CardContent className="px-1 py-0">
-                  <CardTitle className="text-black text-xs font-medium line-clamp-1 word-animate mb-0" data-delay="0">
+                <CardContent className="px-0.5 py-0">
+                  <CardTitle className="text-black text-xs font-medium line-clamp-1 word-animate leading-tight" data-delay="0">
                     {video.title}
                   </CardTitle>
-                  <CardDescription className="text-black text-xs line-clamp-1 mb-0">
+                  <CardDescription className="text-black text-xs line-clamp-1 leading-tight">
                     {video.description}
                   </CardDescription>
                   <div className="flex justify-end">
-                    <span className="text-black text-xs">
+                    <span className="text-black text-xs leading-tight">
                       {video.createdAt?.toDate().toLocaleDateString()}
                     </span>
                   </div>
