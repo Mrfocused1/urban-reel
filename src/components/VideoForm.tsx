@@ -131,45 +131,45 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl w-full bg-slate-900 border-slate-700 max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl w-full bg-white border-gray-200 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-white text-2xl">
+          <DialogTitle className="text-black text-2xl">
             {video ? 'Edit Video' : 'Add New Video'}
           </DialogTitle>
-          <DialogDescription className="text-gray-300">
+          <DialogDescription className="text-gray-600">
             {video ? 'Update video information' : 'Add a new video to the directory'}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="videoUrl" className="text-white">
-              Video URL * {isLoadingYouTube && <span className="text-blue-400">(Loading YouTube data...)</span>}
+            <Label htmlFor="videoUrl" className="text-black">
+              Video URL * {isLoadingYouTube && <span className="text-blue-600">(Loading YouTube data...)</span>}
             </Label>
             <Input
               id="videoUrl"
               value={formData.videoUrl}
               onChange={(e) => handleYouTubeUrlChange(e.target.value)}
               placeholder="https://www.youtube.com/watch?v=..."
-              className="bg-slate-800 border-slate-600 text-white"
+              className="bg-white border-gray-300 text-black placeholder:text-gray-500"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="title" className="text-white">Title *</Label>
+            <Label htmlFor="title" className="text-black">Title *</Label>
             <Input
               id="title"
               value={formData.title}
               onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
               placeholder="Enter video title"
-              className="bg-slate-800 border-slate-600 text-white"
+              className="bg-white border-gray-300 text-black placeholder:text-gray-500"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description" className="text-white">Description</Label>
+            <Label htmlFor="description" className="text-black">Description</Label>
             <Textarea
               id="description"
               value={formData.description}
@@ -180,17 +180,17 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="category" className="text-white">Category *</Label>
+            <Label htmlFor="category" className="text-black">Category *</Label>
             <Select
               value={formData.category}
               onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
             >
-              <SelectTrigger className="bg-slate-800 border-slate-600 text-white">
+              <SelectTrigger className="bg-white border-gray-300 text-black placeholder:text-gray-500">
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-600">
+              <SelectContent className="bg-white border-gray-300">
                 {categories.map((category) => (
-                  <SelectItem key={category} value={category} className="text-white">
+                  <SelectItem key={category} value={category} className="text-black">
                     {category.charAt(0).toUpperCase() + category.slice(1)}
                   </SelectItem>
                 ))}
@@ -199,14 +199,14 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="tags" className="text-white">Tags</Label>
+            <Label htmlFor="tags" className="text-black">Tags</Label>
             <div className="flex gap-2">
               <Input
                 id="tags"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 placeholder="Add a tag and press Enter"
-                className="bg-slate-800 border-slate-600 text-white"
+                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
                 onKeyPress={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault()
@@ -223,7 +223,7 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
                 <Badge
                   key={tag}
                   variant="outline"
-                  className="bg-purple-600/20 border-purple-500 text-purple-200 cursor-pointer"
+                  className="bg-blue-100 border-blue-300 text-blue-700 cursor-pointer hover:bg-blue-200"
                   onClick={() => removeTag(tag)}
                 >
                   {tag} ×
@@ -238,6 +238,7 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={isLoading}
+              className="border-gray-300 text-black hover:bg-gray-100"
             >
               Cancel
             </Button>

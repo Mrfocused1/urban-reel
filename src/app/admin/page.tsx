@@ -199,10 +199,10 @@ export default function AdminPage() {
                 </svg>
               </button>
             </div>
-            <div className="flex justify-center mt-4 relative z-20">
+            <div className="flex justify-center mt-4 relative z-50">
               <Button
                 onClick={handleAddVideo}
-                className="bg-blue-600 hover:bg-blue-700 relative z-30"
+                className="bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg transition-all relative z-50 pointer-events-auto"
               >
                 Add Video
               </Button>
