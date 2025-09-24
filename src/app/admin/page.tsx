@@ -1,6 +1,25 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  arrayMove,
+  rectSortingStrategy,
+} from '@dnd-kit/sortable'
+import {
+  useSortable,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -15,6 +34,100 @@ import DigitalSerenityEffects from '@/components/DigitalSerenityEffects'
 import { toast } from 'sonner'
 import Link from 'next/link'
 
+function SortableVideoCard({ video, onVideoClick, onEditVideo, onDeleteVideo, getThumbnailUrl }: {
+  video: Video
+  onVideoClick: (video: Video) => void
+  onEditVideo: (video: Video) => void
+  onDeleteVideo: (video: Video) => Promise<void>
+  getThumbnailUrl: (video: Video) => string | null
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: video.id || '' })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  }
+
+  return (
+    <Card
+      ref={setNodeRef}
+      style={style}
+      className="bg-white/50 border border-gray-200 hover:bg-white/70 transition-all cursor-pointer overflow-hidden"
+      onClick={() => onVideoClick(video)}
+      {...attributes}
+    >
+      <CardHeader className="p-0">
+        {getThumbnailUrl(video) ? (
+          <img
+            src={getThumbnailUrl(video)!}
+            alt={video.title}
+            className="aspect-video w-full object-cover bg-black opacity-100"
+          />
+        ) : (
+          <div className="aspect-video bg-gray-700 flex items-center justify-center">
+            <span className="text-gray-400">🎬</span>
+          </div>
+        )}
+      </CardHeader>
+      <CardContent className="px-0.5 py-0">
+        <div className="flex items-center justify-between mb-1">
+          <CardTitle className="text-black text-xs font-medium line-clamp-1 word-animate leading-tight flex-1" data-delay="0">
+            {video.title}
+          </CardTitle>
+          <div
+            {...listeners}
+            className="ml-1 p-1 cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="5" cy="6" r="2"/>
+              <circle cx="5" cy="12" r="2"/>
+              <circle cx="5" cy="18" r="2"/>
+              <circle cx="19" cy="6" r="2"/>
+              <circle cx="19" cy="12" r="2"/>
+              <circle cx="19" cy="18" r="2"/>
+            </svg>
+          </div>
+        </div>
+        <CardDescription className="text-black text-xs line-clamp-1 leading-tight">
+          {video.description}
+        </CardDescription>
+        <div className="flex justify-end">
+          <span className="text-black text-xs leading-tight">
+            {video.createdAt?.toDate().toLocaleDateString()}
+          </span>
+        </div>
+
+        {/* Admin Actions */}
+        <div className="flex gap-0.5 mt-1" onClick={(e) => e.stopPropagation()}>
+          <Button
+            onClick={() => onEditVideo(video)}
+            size="sm"
+            className="flex-1 bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg text-xs py-0 h-4 leading-tight"
+          >
+            Edit
+          </Button>
+          <Button
+            onClick={() => onDeleteVideo(video)}
+            size="sm"
+            className="flex-1 bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg text-xs py-0 h-4 leading-tight"
+          >
+            Delete
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
 export default function AdminPage() {
   const [videos, setVideos] = useState<Video[]>([])
   const [filteredVideos, setFilteredVideos] = useState<Video[]>([])
@@ -25,6 +138,21 @@ export default function AdminPage() {
   const [editingVideo, setEditingVideo] = useState<Video | null>(null)
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [activeId, setActiveId] = useState<string | null>(null)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
+    })
+  )
 
   // Authentication effect
   useEffect(() => {
@@ -119,6 +247,39 @@ export default function AdminPage() {
 
   const handleVideoDeleted = () => {
     loadVideos() // Reload videos after delete
+  }
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as string)
+  }
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+
+    if (active.id !== over?.id) {
+      setFilteredVideos((videos) => {
+        const oldIndex = videos.findIndex((video) => video.id === active.id)
+        const newIndex = videos.findIndex((video) => video.id === over?.id)
+
+        const newVideos = arrayMove(videos, oldIndex, newIndex)
+
+        // Also update the main videos array to maintain consistency
+        setVideos((prevVideos) => {
+          if (searchTerm.trim()) {
+            // If filtering, we need to maintain the order in the main array too
+            return prevVideos.map(video => {
+              const newOrder = newVideos.findIndex(nv => nv.id === video.id)
+              return newOrder !== -1 ? { ...video, order: newOrder } : video
+            })
+          }
+          return arrayMove(prevVideos, oldIndex, newIndex)
+        })
+
+        return newVideos
+      })
+    }
+
+    setActiveId(null)
   }
 
   const getThumbnailUrl = (video: Video) => {
@@ -217,60 +378,42 @@ export default function AdminPage() {
               <div className="text-black text-xl">Loading videos...</div>
             </div>
           ) : filteredVideos.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4 lg:gap-6">
-            {filteredVideos.map((video) => (
-              <Card
-                key={video.id}
-                className="bg-white/50 border border-gray-200 hover:bg-white/70 transition-all cursor-pointer overflow-hidden"
-                onClick={() => handleVideoClick(video)}
+            <DndContext
+              sensors={sensors}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={filteredVideos.map(v => v.id || '')}
+                strategy={rectSortingStrategy}
               >
-                <CardHeader className="p-0">
-                  {getThumbnailUrl(video) ? (
-                    <img
-                      src={getThumbnailUrl(video)!}
-                      alt={video.title}
-                      className="aspect-video w-full object-cover bg-black opacity-100"
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4 lg:gap-6">
+                  {filteredVideos.map((video) => (
+                    <SortableVideoCard
+                      key={video.id}
+                      video={video}
+                      onVideoClick={handleVideoClick}
+                      onEditVideo={handleEditVideo}
+                      onDeleteVideo={handleDeleteVideo}
+                      getThumbnailUrl={getThumbnailUrl}
                     />
-                  ) : (
-                    <div className="aspect-video bg-gray-700 flex items-center justify-center">
-                      <span className="text-gray-400">🎬</span>
-                    </div>
-                  )}
-                </CardHeader>
-                <CardContent className="px-0.5 py-0">
-                  <CardTitle className="text-black text-xs font-medium line-clamp-1 word-animate leading-tight" data-delay="0">
-                    {video.title}
-                  </CardTitle>
-                  <CardDescription className="text-black text-xs line-clamp-1 leading-tight">
-                    {video.description}
-                  </CardDescription>
-                  <div className="flex justify-end">
-                    <span className="text-black text-xs leading-tight">
-                      {video.createdAt?.toDate().toLocaleDateString()}
-                    </span>
+                  ))}
+                </div>
+              </SortableContext>
+              <DragOverlay>
+                {activeId ? (
+                  <div className="transform rotate-3 opacity-90">
+                    <SortableVideoCard
+                      video={filteredVideos.find(v => v.id === activeId)!}
+                      onVideoClick={() => {}}
+                      onEditVideo={() => {}}
+                      onDeleteVideo={async () => {}}
+                      getThumbnailUrl={getThumbnailUrl}
+                    />
                   </div>
-
-                  {/* Admin Actions */}
-                  <div className="flex gap-0.5 mt-1" onClick={(e) => e.stopPropagation()}>
-                    <Button
-                      onClick={() => handleEditVideo(video)}
-                      size="sm"
-                      className="flex-1 bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg text-xs py-0 h-4 leading-tight"
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      onClick={() => handleDeleteVideo(video)}
-                      size="sm"
-                      className="flex-1 bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg text-xs py-0 h-4 leading-tight"
-                    >
-                      Delete
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                ) : null}
+              </DragOverlay>
+            </DndContext>
           ) : (
             <div className="text-center py-20">
               <h3 className="text-2xl font-semibold text-black mb-2">

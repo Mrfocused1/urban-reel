@@ -30,7 +30,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
 
   const categories = [
-    'All', 'Music', 'Podcasts', 'Sports', 'Tech News', 'Education',
+    'All', 'Music', 'Podcasts', 'Sports', 'News', 'Education',
     'Entertainment', 'Lifestyle', 'Documentaries', 'Interviews', 'Comedy', 'Vlogs'
   ]
 

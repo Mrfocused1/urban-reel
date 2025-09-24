@@ -19,7 +19,7 @@ interface VideoFormProps {
 }
 
 const categories = [
-  'Music', 'Podcasts', 'Sports', 'Tech News', 'Education',
+  'Music', 'Podcasts', 'Sports', 'News', 'Education',
   'Entertainment', 'Lifestyle', 'Documentaries', 'Interviews', 'Comedy', 'Vlogs'
 ]
 
