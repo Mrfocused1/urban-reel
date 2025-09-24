@@ -19,9 +19,50 @@ interface VideoFormProps {
 }
 
 const categories = [
-  'Music', 'Podcasts', 'Sports', 'News', 'Education',
+  'All', 'Music', 'Podcasts', 'Sports', 'News', 'Education',
   'Entertainment', 'Lifestyle', 'Documentaries', 'Interviews', 'Comedy', 'Vlogs'
 ]
+
+const detectCategoriesFromContent = (title: string, description: string): string[] => {
+  const content = `${title} ${description}`.toLowerCase()
+  const detectedCategories: string[] = []
+
+  if (content.includes('music') || content.includes('song') || content.includes('album') || content.includes('artist')) {
+    detectedCategories.push('Music')
+  }
+  if (content.includes('podcast') || content.includes('interview') || content.includes('discussion')) {
+    detectedCategories.push('Podcasts')
+  }
+  if (content.includes('sport') || content.includes('football') || content.includes('basketball') || content.includes('soccer')) {
+    detectedCategories.push('Sports')
+  }
+  if (content.includes('news') || content.includes('breaking') || content.includes('report') || content.includes('update')) {
+    detectedCategories.push('News')
+  }
+  if (content.includes('education') || content.includes('learn') || content.includes('tutorial') || content.includes('lesson')) {
+    detectedCategories.push('Education')
+  }
+  if (content.includes('entertainment') || content.includes('movie') || content.includes('show') || content.includes('tv')) {
+    detectedCategories.push('Entertainment')
+  }
+  if (content.includes('lifestyle') || content.includes('health') || content.includes('fitness') || content.includes('fashion')) {
+    detectedCategories.push('Lifestyle')
+  }
+  if (content.includes('documentary') || content.includes('documentary')) {
+    detectedCategories.push('Documentaries')
+  }
+  if (content.includes('interview') && !detectedCategories.includes('Interviews')) {
+    detectedCategories.push('Interviews')
+  }
+  if (content.includes('comedy') || content.includes('funny') || content.includes('humor') || content.includes('joke')) {
+    detectedCategories.push('Comedy')
+  }
+  if (content.includes('vlog') || content.includes('daily') || content.includes('my day') || content.includes('personal')) {
+    detectedCategories.push('Vlogs')
+  }
+
+  return detectedCategories.length > 0 ? detectedCategories : ['All']
+}
 
 export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: VideoFormProps) {
   const [formData, setFormData] = useState({
@@ -32,19 +73,20 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
     tags: [] as string[],
     thumbnail: ''
   })
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingYouTube, setIsLoadingYouTube] = useState(false)
 
   const clearFormData = () => {
-    const defaultCategory = categories[0] || ''
     setFormData({
       title: '',
       description: '',
       videoUrl: '',
-      category: defaultCategory,
-      tags: defaultCategory ? [defaultCategory] : [],
+      category: 'All',
+      tags: ['All'],
       thumbnail: ''
     })
+    setSelectedCategories(['All'])
   }
 
   useEffect(() => {
@@ -53,20 +95,21 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
         title: video.title || '',
         description: video.description || '',
         videoUrl: video.videoUrl || '',
-        category: video.category || '',
-        tags: video.tags || [],
+        category: video.category || 'All',
+        tags: video.tags || ['All'],
         thumbnail: video.thumbnail || ''
       })
+      setSelectedCategories(video.tags || ['All'])
     } else {
-      const defaultCategory = categories[0] || ''
       setFormData({
         title: '',
         description: '',
         videoUrl: '',
-        category: defaultCategory,
-        tags: defaultCategory ? [defaultCategory] : [],
+        category: 'All',
+        tags: ['All'],
         thumbnail: ''
       })
+      setSelectedCategories(['All'])
     }
   }, [video])
 
@@ -79,12 +122,18 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
       try {
         const youtubeData = await getYouTubeVideoData(videoId)
         if (youtubeData) {
+          // Try to auto-detect category based on video title/description
+          const autoCategories = detectCategoriesFromContent(youtubeData.title, youtubeData.description)
+
           setFormData(prev => ({
             ...prev,
             title: prev.title || youtubeData.title,
             description: prev.description || youtubeData.description.slice(0, 500),
-            thumbnail: youtubeData.thumbnail
+            thumbnail: youtubeData.thumbnail,
+            category: autoCategories.length > 0 ? autoCategories[0] : 'All',
+            tags: autoCategories.length > 0 ? autoCategories : ['All']
           }))
+          setSelectedCategories(autoCategories.length > 0 ? autoCategories : ['All'])
           toast.success('YouTube video data loaded automatically')
         }
       } catch (error) {
@@ -99,7 +148,7 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!formData.title || !formData.videoUrl || !formData.category) {
+    if (!formData.title || !formData.videoUrl || selectedCategories.length === 0) {
       toast.error('Please fill in all required fields')
       return
     }
@@ -111,8 +160,11 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
         await updateVideo(video.id, formData)
         toast.success('Video updated successfully')
       } else {
-        // Add new video
-        await addVideo(formData)
+        // Add new video with selected categories
+        await addVideo({
+          ...formData,
+          tags: selectedCategories
+        })
         toast.success('Video added successfully')
       }
       onVideoSaved?.()
@@ -184,41 +236,60 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="category" className="text-black">Category *</Label>
-            <Select
-              value={formData.category}
-              onValueChange={(value) => setFormData(prev => ({
-                ...prev,
-                category: value,
-                tags: value ? [value] : []
-              }))}
-            >
-              <SelectTrigger className="bg-white border-gray-300 text-black placeholder:text-gray-500">
-                <SelectValue placeholder="Select a category" />
-              </SelectTrigger>
-              <SelectContent className="bg-white border-gray-300">
-                {categories.map((category) => (
-                  <SelectItem key={category} value={category} className="text-black">
-                    {category.charAt(0).toUpperCase() + category.slice(1)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Label className="text-black">Categories * (Select all that apply)</Label>
+            <div className="grid grid-cols-3 gap-2">
+              {categories.map((category) => (
+                <div key={category} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id={category}
+                    checked={selectedCategories.includes(category)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        const newCategories = [...selectedCategories, category]
+                        setSelectedCategories(newCategories)
+                        setFormData(prev => ({
+                          ...prev,
+                          category: newCategories[0] || 'All',
+                          tags: newCategories
+                        }))
+                      } else {
+                        const newCategories = selectedCategories.filter(c => c !== category)
+                        if (newCategories.length === 0) {
+                          newCategories.push('All')
+                        }
+                        setSelectedCategories(newCategories)
+                        setFormData(prev => ({
+                          ...prev,
+                          category: newCategories[0] || 'All',
+                          tags: newCategories
+                        }))
+                      }
+                    }}
+                    className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
+                  />
+                  <label htmlFor={category} className="text-sm text-black cursor-pointer">
+                    {category}
+                  </label>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="space-y-2">
-            <Label className="text-black">Selected Category as Tag</Label>
+            <Label className="text-black">Selected Categories</Label>
             <div className="flex flex-wrap gap-2">
-              {formData.category && (
+              {selectedCategories.map((category) => (
                 <Badge
+                  key={category}
                   variant="outline"
-                  className="bg-blue-100 border-blue-300 text-blue-700"
+                  className="bg-green-100 border-green-300 text-green-700"
                 >
-                  {formData.category}
+                  {category}
                 </Badge>
-              )}
-              {!formData.category && (
-                <p className="text-gray-500 text-sm">Select a category above to automatically set the tag</p>
+              ))}
+              {selectedCategories.length === 0 && (
+                <p className="text-gray-500 text-sm">Select categories above</p>
               )}
             </div>
           </div>

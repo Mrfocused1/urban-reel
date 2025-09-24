@@ -1,6 +1,7 @@
 'use client'
 
-import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import { Video } from '@/lib/database'
 
 interface VideoPlayerModalProps {
@@ -32,6 +33,9 @@ export default function VideoPlayerModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl w-full bg-white border-gray-200 p-0">
+        <VisuallyHidden>
+          <DialogTitle>{video.title}</DialogTitle>
+        </VisuallyHidden>
         {/* Video Player */}
         <div className="aspect-video w-full">
           <iframe

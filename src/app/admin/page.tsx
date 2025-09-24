@@ -26,7 +26,7 @@ import { Input } from '@/components/ui/input'
 import { Toaster } from '@/components/ui/sonner'
 import { signInAnonymously, onAuthStateChanged, User } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
-import { Video, getVideos, deleteVideo } from '@/lib/database'
+import { Video, getVideos, deleteVideo, updateVideoSortOrder } from '@/lib/database'
 import { SparklesCore } from '@/components/ui/sparkles-core'
 import VideoPlayerModal from '@/components/VideoPlayerModal'
 import VideoForm from '@/components/VideoForm'
@@ -256,7 +256,7 @@ export default function AdminPage() {
     setActiveId(event.active.id as string)
   }
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event
     setActiveId(null)
 
@@ -264,30 +264,39 @@ export default function AdminPage() {
       return
     }
 
-    setFilteredVideos((videos) => {
-      const oldIndex = videos.findIndex((video) => video.id === active.id)
-      const newIndex = videos.findIndex((video) => video.id === over.id)
+    const oldIndex = filteredVideos.findIndex((video) => video.id === active.id)
+    const newIndex = filteredVideos.findIndex((video) => video.id === over.id)
 
-      if (oldIndex === -1 || newIndex === -1) {
-        return videos
+    if (oldIndex === -1 || newIndex === -1) {
+      return
+    }
+
+    const reorderedVideos = arrayMove(filteredVideos, oldIndex, newIndex)
+
+    // Update local state immediately for responsive UI
+    setFilteredVideos(reorderedVideos)
+
+    // Update main videos array
+    setVideos((prevVideos) => {
+      const mainOldIndex = prevVideos.findIndex((video) => video.id === active.id)
+      const mainNewIndex = prevVideos.findIndex((video) => video.id === over.id)
+
+      if (mainOldIndex === -1 || mainNewIndex === -1) {
+        return prevVideos
       }
 
-      const reorderedVideos = arrayMove(videos, oldIndex, newIndex)
+      const reorderedMainVideos = arrayMove(prevVideos, mainOldIndex, mainNewIndex)
 
-      // Update the main videos array to maintain consistency
-      setVideos((prevVideos) => {
-        const mainOldIndex = prevVideos.findIndex((video) => video.id === active.id)
-        const mainNewIndex = prevVideos.findIndex((video) => video.id === over.id)
-
-        if (mainOldIndex === -1 || mainNewIndex === -1) {
-          return prevVideos
-        }
-
-        return arrayMove(prevVideos, mainOldIndex, mainNewIndex)
+      // Save the new order to database
+      updateVideoSortOrder(reorderedMainVideos).catch((error) => {
+        console.error('Error updating video sort order:', error)
+        toast.error('Failed to save video order')
       })
 
-      return reorderedVideos
+      return reorderedMainVideos
     })
+
+    toast.success('Video order updated')
   }
 
   const getThumbnailUrl = (video: Video) => {

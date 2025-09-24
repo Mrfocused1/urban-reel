@@ -78,6 +78,7 @@ export function HyperText({
           <motion.span
             key={i}
             className={cn("font-mono", letter === " " ? "w-3" : "", className)}
+            style={{ color: '#16a34a', textShadow: '0 0 4px rgba(255,255,255,0.8)' }}
             {...framerProps}
           >
             {letter.toUpperCase()}

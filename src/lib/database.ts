@@ -26,6 +26,7 @@ export interface Video {
   addedBy?: string
   createdAt?: Timestamp
   updatedAt?: Timestamp
+  sortOrder?: number
 }
 
 export interface YouTubeVideoData {
@@ -107,8 +108,16 @@ export async function getVideos(): Promise<Video[]> {
       ...doc.data()
     })) as Video[]
 
-    // Sort in memory, handling videos without createdAt
+    // Sort by sortOrder first, then by creation date
     return videos.sort((a, b) => {
+      // If both have sortOrder, use that
+      if (a.sortOrder !== undefined && b.sortOrder !== undefined) {
+        return a.sortOrder - b.sortOrder
+      }
+      // If only one has sortOrder, prioritize it
+      if (a.sortOrder !== undefined) return -1
+      if (b.sortOrder !== undefined) return 1
+      // Fall back to creation date sorting
       const aTime = a.createdAt?.toDate().getTime() || 0
       const bTime = b.createdAt?.toDate().getTime() || 0
       return bTime - aTime // Most recent first
@@ -202,6 +211,29 @@ export async function deleteVideo(id: string): Promise<void> {
 }
 
 // Migration function to update "Tech News" to "News"
+// Update video sort order
+export async function updateVideoSortOrder(videos: Video[]): Promise<void> {
+  try {
+    const updatePromises: Promise<void>[] = []
+
+    videos.forEach((video, index) => {
+      if (video.id) {
+        const videoRef = doc(db, 'videos', video.id)
+        const updateData: Partial<Video> = {
+          sortOrder: index,
+          updatedAt: Timestamp.now()
+        }
+        updatePromises.push(updateDoc(videoRef, updateData))
+      }
+    })
+
+    await Promise.all(updatePromises)
+  } catch (error) {
+    console.error('Error updating video sort order:', error)
+    throw error
+  }
+}
+
 export async function migrateTechNewsToNews(): Promise<{ updated: number; message: string }> {
   try {
     const videosCollection = collection(db, 'videos')
