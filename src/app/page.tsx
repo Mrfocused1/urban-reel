@@ -299,9 +299,6 @@ export default function Home() {
                   <CardTitle className="text-black text-xs font-medium line-clamp-1 word-animate leading-tight" data-delay="0">
                     {video.title}
                   </CardTitle>
-                  <CardDescription className="text-black text-xs line-clamp-1 leading-tight">
-                    {video.description}
-                  </CardDescription>
                 </CardContent>
               </Card>
             ))}

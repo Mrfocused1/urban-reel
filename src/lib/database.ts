@@ -200,3 +200,40 @@ export async function deleteVideo(id: string): Promise<void> {
     throw error
   }
 }
+
+// Migration function to update "Tech News" to "News"
+export async function migrateTechNewsToNews(): Promise<{ updated: number; message: string }> {
+  try {
+    const videosCollection = collection(db, 'videos')
+    const q = query(videosCollection, where('category', '==', 'Tech News'))
+    const querySnapshot = await getDocs(q)
+
+    let updatedCount = 0
+    const updatePromises: Promise<void>[] = []
+
+    querySnapshot.forEach((docSnapshot) => {
+      const videoData = docSnapshot.data()
+      const videoRef = doc(db, 'videos', docSnapshot.id)
+
+      // Update category and tags
+      const updateData: Partial<Video> = {
+        category: 'News',
+        tags: videoData.tags?.map((tag: string) => tag === 'Tech News' ? 'News' : tag) || ['News'],
+        updatedAt: Timestamp.fromDate(new Date())
+      }
+
+      updatePromises.push(updateDoc(videoRef, updateData))
+      updatedCount++
+    })
+
+    await Promise.all(updatePromises)
+
+    return {
+      updated: updatedCount,
+      message: `Successfully updated ${updatedCount} videos from "Tech News" to "News"`
+    }
+  } catch (error) {
+    console.error('Error migrating Tech News to News:', error)
+    throw error
+  }
+}

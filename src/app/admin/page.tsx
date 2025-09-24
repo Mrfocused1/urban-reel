@@ -26,7 +26,7 @@ import { Input } from '@/components/ui/input'
 import { Toaster } from '@/components/ui/sonner'
 import { signInAnonymously, onAuthStateChanged, User } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
-import { Video, getVideos, deleteVideo } from '@/lib/database'
+import { Video, getVideos, deleteVideo, migrateTechNewsToNews } from '@/lib/database'
 import { SparklesCore } from '@/components/ui/sparkles-core'
 import VideoPlayerModal from '@/components/VideoPlayerModal'
 import VideoForm from '@/components/VideoForm'
@@ -97,9 +97,6 @@ function SortableVideoCard({ video, onVideoClick, onEditVideo, onDeleteVideo, ge
             </svg>
           </div>
         </div>
-        <CardDescription className="text-black text-xs line-clamp-1 leading-tight">
-          {video.description}
-        </CardDescription>
         <div className="flex justify-end">
           <span className="text-black text-xs leading-tight">
             {video.createdAt?.toDate().toLocaleDateString()}
@@ -249,6 +246,17 @@ export default function AdminPage() {
     loadVideos() // Reload videos after delete
   }
 
+  const handleMigration = async () => {
+    try {
+      const result = await migrateTechNewsToNews()
+      toast.success(result.message)
+      loadVideos() // Reload videos to show updated data
+    } catch (error) {
+      toast.error('Migration failed. Please try again.')
+      console.error('Migration error:', error)
+    }
+  }
+
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string)
   }
@@ -320,6 +328,13 @@ export default function AdminPage() {
         <div className="container mx-auto">
           <nav className="flex items-center justify-end mb-4">
             <div className="flex items-center gap-4">
+              <Button
+                onClick={handleMigration}
+                variant="outline"
+                className="bg-orange-100 border-orange-300 text-orange-700 hover:bg-orange-200"
+              >
+                Migrate Tech News → News
+              </Button>
               <Link href="/">
                 <Button
                   variant="outline"
