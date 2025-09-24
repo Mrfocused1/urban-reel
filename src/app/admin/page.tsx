@@ -14,7 +14,7 @@ import {
 import {
   SortableContext,
   arrayMove,
-  rectSortingStrategy,
+  verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import {
   useSortable,
@@ -60,7 +60,7 @@ function SortableVideoCard({ video, onVideoClick, onEditVideo, onDeleteVideo, ge
     <div
       ref={setNodeRef}
       style={style}
-      className="bg-white/50 border border-gray-200 hover:bg-white/70 transition-all cursor-pointer overflow-hidden rounded-lg"
+      className={`bg-white/50 border border-gray-200 hover:bg-white/70 transition-all cursor-pointer overflow-hidden rounded-lg ${isDragging ? 'opacity-50 rotate-3 scale-105 z-50' : ''}`}
       onClick={() => onVideoClick(video)}
       {...attributes}
     >
@@ -84,10 +84,10 @@ function SortableVideoCard({ video, onVideoClick, onEditVideo, onDeleteVideo, ge
           </div>
           <div
             {...listeners}
-            className="ml-1 p-0.5 cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600"
+            className="ml-1 p-1 cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600 touch-none"
             onClick={(e) => e.stopPropagation()}
           >
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
               <circle cx="5" cy="6" r="2"/>
               <circle cx="5" cy="12" r="2"/>
               <circle cx="5" cy="18" r="2"/>
@@ -145,13 +145,13 @@ export default function AdminPage() {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: 3,
       },
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 250,
-        tolerance: 5,
+        delay: 100,
+        tolerance: 8,
       },
     })
   )
@@ -258,31 +258,36 @@ export default function AdminPage() {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
+    setActiveId(null)
 
-    if (active.id !== over?.id) {
-      setFilteredVideos((videos) => {
-        const oldIndex = videos.findIndex((video) => video.id === active.id)
-        const newIndex = videos.findIndex((video) => video.id === over?.id)
-
-        const newVideos = arrayMove(videos, oldIndex, newIndex)
-
-        // Also update the main videos array to maintain consistency
-        setVideos((prevVideos) => {
-          if (searchTerm.trim()) {
-            // If filtering, we need to maintain the order in the main array too
-            return prevVideos.map(video => {
-              const newOrder = newVideos.findIndex(nv => nv.id === video.id)
-              return newOrder !== -1 ? { ...video, order: newOrder } : video
-            })
-          }
-          return arrayMove(prevVideos, oldIndex, newIndex)
-        })
-
-        return newVideos
-      })
+    if (!over || active.id === over.id) {
+      return
     }
 
-    setActiveId(null)
+    setFilteredVideos((videos) => {
+      const oldIndex = videos.findIndex((video) => video.id === active.id)
+      const newIndex = videos.findIndex((video) => video.id === over.id)
+
+      if (oldIndex === -1 || newIndex === -1) {
+        return videos
+      }
+
+      const reorderedVideos = arrayMove(videos, oldIndex, newIndex)
+
+      // Update the main videos array to maintain consistency
+      setVideos((prevVideos) => {
+        const mainOldIndex = prevVideos.findIndex((video) => video.id === active.id)
+        const mainNewIndex = prevVideos.findIndex((video) => video.id === over.id)
+
+        if (mainOldIndex === -1 || mainNewIndex === -1) {
+          return prevVideos
+        }
+
+        return arrayMove(prevVideos, mainOldIndex, mainNewIndex)
+      })
+
+      return reorderedVideos
+    })
   }
 
   const getThumbnailUrl = (video: Video) => {
@@ -342,7 +347,7 @@ export default function AdminPage() {
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-2.5 relative z-20" style={{ color: '#16a34a', textShadow: '0 0 4px rgba(255,255,255,0.8)' }}>
             LiveByTheRules Admin
           </h1>
-          <p className="text-lg sm:text-xl mb-2.5 max-w-2xl mx-auto px-4 relative z-20" style={{ color: '#16a34a', textShadow: '0 0 4px rgba(255,255,255,0.8)' }}>
+          <p className="text-lg sm:text-xl mb-2.5 max-w-2xl mx-auto px-4 relative z-20" style={{ color: '#000000', textShadow: '0 0 4px rgba(255,255,255,0.8)' }}>
             Manage your video directory
           </p>
 
@@ -388,7 +393,7 @@ export default function AdminPage() {
             >
               <SortableContext
                 items={filteredVideos.map(v => v.id || '')}
-                strategy={rectSortingStrategy}
+                strategy={verticalListSortingStrategy}
               >
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-1">
                   {filteredVideos.map((video) => (

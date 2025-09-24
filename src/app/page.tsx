@@ -13,6 +13,7 @@ import { SparklesCore } from '@/components/ui/sparkles-core'
 import VideoPlayerModal from '@/components/VideoPlayerModal'
 import VideoForm from '@/components/VideoForm'
 import DigitalSerenityEffects from '@/components/DigitalSerenityEffects'
+import { HyperText } from '@/components/ui/hyper-text'
 import { toast } from 'sonner'
 import { testFirebaseConnection } from '@/lib/firebase-test'
 import Link from 'next/link'
@@ -202,10 +203,14 @@ export default function Home() {
       {/* Hero Section */}
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-1 sm:py-2">
         <div className="text-center py-1 sm:py-2 mb-2.5">
-          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-2.5 relative z-20" style={{ color: '#16a34a', textShadow: '0 0 4px rgba(255,255,255,0.8)' }}>
-            LiveByTheRules
-          </h1>
-          <p className="text-lg sm:text-xl mb-2.5 max-w-2xl mx-auto px-4 relative z-20" style={{ color: '#16a34a', textShadow: '0 0 4px rgba(255,255,255,0.8)' }}>
+          <div className="flex justify-center">
+            <HyperText
+              text="LiveByTheRules"
+              className="text-3xl sm:text-4xl md:text-6xl font-bold mb-2.5 relative z-20"
+              style={{ color: '#16a34a', textShadow: '0 0 4px rgba(255,255,255,0.8)' }}
+            />
+          </div>
+          <p className="text-lg sm:text-xl mb-2.5 max-w-2xl mx-auto px-4 relative z-20" style={{ color: '#000000', textShadow: '0 0 4px rgba(255,255,255,0.8)' }}>
             Find the full videos of the clips posted on the page
           </p>
 
