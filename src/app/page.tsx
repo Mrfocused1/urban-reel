@@ -200,17 +200,17 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        <div className="text-center py-4 sm:py-8 mb-4">
-          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-1" style={{ color: '#000000' }}>
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-1 sm:py-2">
+        <div className="text-center py-1 sm:py-2 mb-2.5">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-2.5 relative z-20" style={{ color: '#000000', textShadow: '0 0 4px rgba(255,255,255,0.8)' }}>
             Urban Directory
           </h1>
-          <p className="text-lg sm:text-xl mb-4 max-w-2xl mx-auto px-4" style={{ color: '#000000' }}>
+          <p className="text-lg sm:text-xl mb-2.5 max-w-2xl mx-auto px-4 relative z-20" style={{ color: '#000000', textShadow: '0 0 4px rgba(255,255,255,0.8)' }}>
             Find the full videos of the clips posted on the page
           </p>
 
           {/* Search Bar */}
-          <div className="max-w-2xl mx-auto mb-2 sm:mb-4 px-4">
+          <div className="max-w-2xl mx-auto mb-2.5 px-4">
             <div className="relative">
               <Input
                 type="text"
@@ -230,7 +230,7 @@ export default function Home() {
         </div>
 
         {/* Categories */}
-        <div className="mb-1 sm:mb-3 animate-fade-in">
+        <div className="mb-2.5 animate-fade-in">
           <div className="flex justify-center">
             <div className="flex items-center gap-1 bg-white/20 border border-gray-200 backdrop-blur-lg py-1 px-1 rounded-full shadow-lg overflow-x-auto scrollbar-hide">
               {categories.map((category) => {
@@ -262,26 +262,26 @@ export default function Home() {
         </div>
 
         {/* Video Grid */}
-        <div className="relative z-10 px-1 sm:px-4 animate-fade-in">
+        <div className="relative z-10 px-1 sm:px-4 animate-fade-in mt-2.5">
           {isLoading ? (
             <div className="text-center py-20">
               <div className="text-black text-xl">Loading videos...</div>
             </div>
           ) : filteredVideos.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4 lg:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-1">
             {filteredVideos.map((video) => (
-              <Card
+              <div
                 key={video.id}
-                className="bg-white/50 border border-gray-200 hover:bg-white/70 transition-all cursor-pointer overflow-hidden"
+                className="bg-white/50 border border-gray-200 hover:bg-white/70 transition-all cursor-pointer overflow-hidden rounded-lg"
                 onClick={() => handleVideoClick(video)}
               >
-                <CardHeader className="p-0 relative">
+                <div className="relative">
                   {getThumbnailUrl(video) ? (
                     <>
                       <img
                         src={getThumbnailUrl(video)!}
                         alt={video.title}
-                        className="aspect-video w-full object-cover bg-black opacity-100"
+                        className="aspect-video w-full object-cover bg-black rounded-t-lg"
                       />
                       {formatDuration(video.duration) && (
                         <div className="absolute bottom-1 right-1 bg-black/70 text-white px-1 py-0.5 rounded text-xs font-mono">
@@ -290,17 +290,22 @@ export default function Home() {
                       )}
                     </>
                   ) : (
-                    <div className="aspect-video bg-gray-700 flex items-center justify-center">
+                    <div className="aspect-video bg-gray-700 flex items-center justify-center rounded-t-lg">
                       <span className="text-gray-400">🎬</span>
                     </div>
                   )}
-                </CardHeader>
-                <CardContent className="px-0.5 py-0">
-                  <CardTitle className="text-black text-xs font-medium line-clamp-1 word-animate leading-tight" data-delay="0">
+                </div>
+                <div className="px-2 py-1 text-center">
+                  <div className="text-sm font-bold line-clamp-1 word-animate leading-tight mb-1" style={{ color: '#000000' }} data-delay="0">
                     {video.title}
-                  </CardTitle>
-                </CardContent>
-              </Card>
+                  </div>
+                  {formatDuration(video.duration) && (
+                    <div className="text-sm font-bold" style={{ color: '#000000' }}>
+                      {formatDuration(video.duration)}
+                    </div>
+                  )}
+                </div>
+              </div>
             ))}
           </div>
           ) : (
