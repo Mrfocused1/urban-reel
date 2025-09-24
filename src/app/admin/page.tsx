@@ -199,10 +199,10 @@ export default function AdminPage() {
                 </svg>
               </button>
             </div>
-            <div className="flex justify-center mt-4">
+            <div className="flex justify-center mt-4 relative z-20">
               <Button
                 onClick={handleAddVideo}
-                className="bg-blue-600 hover:bg-blue-700"
+                className="bg-blue-600 hover:bg-blue-700 relative z-30"
               >
                 Add Video
               </Button>
@@ -221,7 +221,7 @@ export default function AdminPage() {
             {filteredVideos.map((video) => (
               <Card
                 key={video.id}
-                className="bg-white/50 border border-gray-200 hover:bg-white/70 transition-all cursor-pointer"
+                className="bg-white/50 border border-gray-200 hover:bg-white/70 transition-all cursor-pointer overflow-hidden"
                 onClick={() => handleVideoClick(video)}
               >
                 <CardHeader className="p-0">
@@ -229,19 +229,19 @@ export default function AdminPage() {
                     <img
                       src={getThumbnailUrl(video)!}
                       alt={video.title}
-                      className="aspect-video w-full object-cover rounded-t-lg bg-black opacity-100"
+                      className="aspect-video w-full object-cover bg-black opacity-100"
                     />
                   ) : (
-                    <div className="aspect-video bg-gray-700 rounded-t-lg flex items-center justify-center">
+                    <div className="aspect-video bg-gray-700 flex items-center justify-center">
                       <span className="text-gray-400">🎬</span>
                     </div>
                   )}
                 </CardHeader>
-                <CardContent className="p-0.5">
-                  <CardTitle className="text-black text-xs font-medium mb-0 line-clamp-1 word-animate" data-delay="0">
+                <CardContent className="px-1 py-0.5">
+                  <CardTitle className="text-black text-xs font-medium line-clamp-1 word-animate" data-delay="0">
                     {video.title}
                   </CardTitle>
-                  <CardDescription className="text-black text-xs mb-0 line-clamp-1">
+                  <CardDescription className="text-black text-xs line-clamp-1">
                     {video.description}
                   </CardDescription>
                   <div className="flex justify-end mb-0.5">
@@ -255,7 +255,7 @@ export default function AdminPage() {
                     <Button
                       onClick={() => handleEditVideo(video)}
                       size="sm"
-                      className="flex-1 bg-blue-100 border-blue-500 text-black hover:bg-blue-200 text-xs py-0.5 h-6"
+                      className="flex-1 bg-blue-100 border-blue-500 text-black hover:bg-blue-200 text-xs py-0.5 h-5"
                     >
                       Edit
                     </Button>
@@ -263,7 +263,7 @@ export default function AdminPage() {
                       onClick={() => handleDeleteVideo(video)}
                       size="sm"
                       variant="destructive"
-                      className="flex-1 bg-red-100 border-red-500 text-black hover:bg-red-200 text-xs py-0.5 h-6"
+                      className="flex-1 bg-red-100 border-red-500 text-black hover:bg-red-200 text-xs py-0.5 h-5"
                     >
                       Delete
                     </Button>

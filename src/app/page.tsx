@@ -30,8 +30,8 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
 
   const categories = [
-    'All', 'Music', 'Podcasts', 'Sports', 'Comedy', 'Education',
-    'Entertainment', 'Lifestyle', 'Documentaries', 'Interviews', 'Vlogs', 'Others'
+    'All', 'Music', 'Podcasts', 'Sports', 'Tech News', 'Education',
+    'Entertainment', 'Lifestyle', 'Documentaries', 'Interviews', 'Comedy', 'Vlogs'
   ]
 
   // Authentication effect
@@ -168,11 +168,13 @@ export default function Home() {
         <div className="container mx-auto">
           <nav className="flex items-center justify-end mb-4">
             <div className="flex items-center gap-4">
-              <Link
-                href="/admin"
-                className="text-black hover:text-blue-600 transition-colors"
-              >
-                Admin
+              <Link href="/admin">
+                <Button
+                  variant="outline"
+                  className="bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg transition-all"
+                >
+                  Admin
+                </Button>
               </Link>
             </div>
           </nav>
@@ -182,10 +184,10 @@ export default function Home() {
       {/* Hero Section */}
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         <div className="text-center py-4 sm:py-8 mb-4">
-          <h1 className="text-black text-3xl sm:text-4xl md:text-6xl font-bold mb-1">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-1" style={{ color: '#000000' }}>
             Urban Directory
           </h1>
-          <p className="text-lg sm:text-xl text-black mb-4 max-w-2xl mx-auto px-4">
+          <p className="text-lg sm:text-xl mb-4 max-w-2xl mx-auto px-4" style={{ color: '#000000' }}>
             Find the full videos of the clips posted on the page
           </p>
 
@@ -252,7 +254,7 @@ export default function Home() {
             {filteredVideos.map((video) => (
               <Card
                 key={video.id}
-                className="bg-white/50 border border-gray-200 hover:bg-white/70 transition-all cursor-pointer"
+                className="bg-white/50 border border-gray-200 hover:bg-white/70 transition-all cursor-pointer overflow-hidden"
                 onClick={() => handleVideoClick(video)}
               >
                 <CardHeader className="p-0">
@@ -260,19 +262,19 @@ export default function Home() {
                     <img
                       src={getThumbnailUrl(video)!}
                       alt={video.title}
-                      className="aspect-video w-full object-cover rounded-t-lg bg-black opacity-100"
+                      className="aspect-video w-full object-cover bg-black opacity-100"
                     />
                   ) : (
-                    <div className="aspect-video bg-gray-700 rounded-t-lg flex items-center justify-center">
+                    <div className="aspect-video bg-gray-700 flex items-center justify-center">
                       <span className="text-gray-400">🎬</span>
                     </div>
                   )}
                 </CardHeader>
-                <CardContent className="p-0.5">
-                  <CardTitle className="text-black text-xs font-medium mb-0 line-clamp-1 word-animate" data-delay="0">
+                <CardContent className="px-1 py-0.5">
+                  <CardTitle className="text-black text-xs font-medium line-clamp-1 word-animate" data-delay="0">
                     {video.title}
                   </CardTitle>
-                  <CardDescription className="text-black text-xs mb-0 line-clamp-1">
+                  <CardDescription className="text-black text-xs line-clamp-1">
                     {video.description}
                   </CardDescription>
                   <div className="flex justify-end">

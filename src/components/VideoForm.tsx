@@ -19,9 +19,8 @@ interface VideoFormProps {
 }
 
 const categories = [
-  'educational', 'entertainment', 'music', 'gaming',
-  'technology', 'lifestyle', 'sports', 'news',
-  'comedy', 'documentary', 'tutorial', 'vlog'
+  'Music', 'Podcasts', 'Sports', 'Tech News', 'Education',
+  'Entertainment', 'Lifestyle', 'Documentaries', 'Interviews', 'Comedy', 'Vlogs'
 ]
 
 export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: VideoFormProps) {
