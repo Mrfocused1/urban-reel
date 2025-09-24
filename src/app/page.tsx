@@ -203,7 +203,7 @@ export default function Home() {
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-1 sm:py-2">
         <div className="text-center py-1 sm:py-2 mb-2.5">
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-2.5 relative z-20" style={{ color: '#000000', textShadow: '0 0 4px rgba(255,255,255,0.8)' }}>
-            Urban Directory
+            LiveByTheRules
           </h1>
           <p className="text-lg sm:text-xl mb-2.5 max-w-2xl mx-auto px-4 relative z-20" style={{ color: '#000000', textShadow: '0 0 4px rgba(255,255,255,0.8)' }}>
             Find the full videos of the clips posted on the page
@@ -217,9 +217,9 @@ export default function Home() {
                 placeholder="Search videos..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full h-12 px-4 pr-12 bg-white/80 backdrop-blur-lg border border-blue-600/30 text-black placeholder:text-gray-500 focus:outline-none focus:border-blue-600 focus:shadow-[0_0_20px_rgba(30,64,175,0.3)] transition-all duration-300"
+                className="w-full h-12 px-4 pr-12 bg-white/80 backdrop-blur-lg border border-green-600/30 text-black placeholder:text-gray-500 focus:outline-none focus:border-green-600 focus:shadow-[0_0_20px_rgba(34,197,94,0.3)] transition-all duration-300"
               />
-              <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-600 hover:text-blue-400 transition-colors">
+              <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-600 hover:text-green-400 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
                   <circle cx="11" cy="11" r="8"></circle>
                   <path d="m21 21-4.35-4.35"></path>
@@ -239,13 +239,13 @@ export default function Home() {
                   <button
                     key={category}
                     onClick={() => setSelectedCategory(category)}
-                    className="relative cursor-pointer text-sm font-semibold px-4 py-2 rounded-full transition-colors text-black/80 hover:text-blue-600 whitespace-nowrap flex-shrink-0"
+                    className="relative cursor-pointer text-sm font-semibold px-4 py-2 rounded-full transition-colors text-black/80 hover:text-green-600 whitespace-nowrap flex-shrink-0"
                   >
                     {category}
                     {isActive && (
                       <motion.div
                         layoutId="categoryLamp"
-                        className="absolute inset-0 w-full bg-blue-600/10 rounded-full -z-10"
+                        className="absolute inset-0 w-full bg-green-600/10 rounded-full -z-10"
                         initial={false}
                         transition={{
                           type: "spring",
