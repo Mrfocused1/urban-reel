@@ -142,6 +142,24 @@ export default function Home() {
     return null
   }
 
+  const formatDuration = (duration?: string) => {
+    if (!duration) return null
+
+    // Convert ISO 8601 duration (PT4M13S) to readable format (4:13)
+    const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/)
+    if (!match) return null
+
+    const hours = match[1] ? parseInt(match[1]) : 0
+    const minutes = match[2] ? parseInt(match[2]) : 0
+    const seconds = match[3] ? parseInt(match[3]) : 0
+
+    if (hours > 0) {
+      return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+    } else {
+      return `${minutes}:${seconds.toString().padStart(2, '0')}`
+    }
+  }
+
   return (
     <div className="min-h-screen relative bg-white">
       {/* SparklesCore Background */}
@@ -257,13 +275,20 @@ export default function Home() {
                 className="bg-white/50 border border-gray-200 hover:bg-white/70 transition-all cursor-pointer overflow-hidden"
                 onClick={() => handleVideoClick(video)}
               >
-                <CardHeader className="p-0">
+                <CardHeader className="p-0 relative">
                   {getThumbnailUrl(video) ? (
-                    <img
-                      src={getThumbnailUrl(video)!}
-                      alt={video.title}
-                      className="aspect-video w-full object-cover bg-black opacity-100"
-                    />
+                    <>
+                      <img
+                        src={getThumbnailUrl(video)!}
+                        alt={video.title}
+                        className="aspect-video w-full object-cover bg-black opacity-100"
+                      />
+                      {formatDuration(video.duration) && (
+                        <div className="absolute bottom-1 right-1 bg-black/70 text-white px-1 py-0.5 rounded text-xs font-mono">
+                          {formatDuration(video.duration)}
+                        </div>
+                      )}
+                    </>
                   ) : (
                     <div className="aspect-video bg-gray-700 flex items-center justify-center">
                       <span className="text-gray-400">🎬</span>
@@ -277,11 +302,6 @@ export default function Home() {
                   <CardDescription className="text-black text-xs line-clamp-1 leading-tight">
                     {video.description}
                   </CardDescription>
-                  <div className="flex justify-end">
-                    <span className="text-black text-xs leading-tight">
-                      {video.createdAt?.toDate().toLocaleDateString()}
-                    </span>
-                  </div>
                 </CardContent>
               </Card>
             ))}

@@ -111,14 +111,14 @@ function SortableVideoCard({ video, onVideoClick, onEditVideo, onDeleteVideo, ge
           <Button
             onClick={() => onEditVideo(video)}
             size="sm"
-            className="flex-1 bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg text-xs py-0 h-4 leading-tight"
+            className="flex-1 bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg text-xs py-1 h-6"
           >
             Edit
           </Button>
           <Button
             onClick={() => onDeleteVideo(video)}
             size="sm"
-            className="flex-1 bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg text-xs py-0 h-4 leading-tight"
+            className="flex-1 bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg text-xs py-1 h-6"
           >
             Delete
           </Button>
