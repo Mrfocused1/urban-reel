@@ -339,10 +339,10 @@ export default function AdminPage() {
       {/* Hero Section */}
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-1 sm:py-2">
         <div className="text-center py-1 sm:py-2 mb-2.5">
-          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-2.5 relative z-20" style={{ color: '#000000', textShadow: '0 0 4px rgba(255,255,255,0.8)' }}>
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-2.5 relative z-20" style={{ color: '#16a34a', textShadow: '0 0 4px rgba(255,255,255,0.8)' }}>
             LiveByTheRules Admin
           </h1>
-          <p className="text-lg sm:text-xl mb-2.5 max-w-2xl mx-auto px-4 relative z-20" style={{ color: '#000000', textShadow: '0 0 4px rgba(255,255,255,0.8)' }}>
+          <p className="text-lg sm:text-xl mb-2.5 max-w-2xl mx-auto px-4 relative z-20" style={{ color: '#16a34a', textShadow: '0 0 4px rgba(255,255,255,0.8)' }}>
             Manage your video directory
           </p>
 
