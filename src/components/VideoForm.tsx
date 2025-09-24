@@ -32,7 +32,6 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
     tags: [] as string[],
     thumbnail: ''
   })
-  const [tagInput, setTagInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingYouTube, setIsLoadingYouTube] = useState(false)
 
@@ -83,22 +82,6 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
     }
   }
 
-  const addTag = () => {
-    if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
-      setFormData(prev => ({
-        ...prev,
-        tags: [...prev.tags, tagInput.trim()]
-      }))
-      setTagInput('')
-    }
-  }
-
-  const removeTag = (tagToRemove: string) => {
-    setFormData(prev => ({
-      ...prev,
-      tags: prev.tags.filter(tag => tag !== tagToRemove)
-    }))
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -175,7 +158,7 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
               placeholder="Enter video description"
-              className="bg-slate-800 border-slate-600 text-white min-h-[100px]"
+              className="bg-white border-gray-300 text-black placeholder:text-gray-500 min-h-[100px]"
             />
           </div>
 
@@ -183,7 +166,11 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
             <Label htmlFor="category" className="text-black">Category *</Label>
             <Select
               value={formData.category}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
+              onValueChange={(value) => setFormData(prev => ({
+                ...prev,
+                category: value,
+                tags: value ? [value] : []
+              }))}
             >
               <SelectTrigger className="bg-white border-gray-300 text-black placeholder:text-gray-500">
                 <SelectValue placeholder="Select a category" />
@@ -199,36 +186,19 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="tags" className="text-black">Tags</Label>
-            <div className="flex gap-2">
-              <Input
-                id="tags"
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                placeholder="Add a tag and press Enter"
-                className="bg-white border-gray-300 text-black placeholder:text-gray-500"
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault()
-                    addTag()
-                  }
-                }}
-              />
-              <Button type="button" onClick={addTag} className="bg-blue-600 hover:bg-blue-700">
-                Add
-              </Button>
-            </div>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {formData.tags.map((tag) => (
+            <Label className="text-black">Selected Category as Tag</Label>
+            <div className="flex flex-wrap gap-2">
+              {formData.category && (
                 <Badge
-                  key={tag}
                   variant="outline"
-                  className="bg-blue-100 border-blue-300 text-blue-700 cursor-pointer hover:bg-blue-200"
-                  onClick={() => removeTag(tag)}
+                  className="bg-blue-100 border-blue-300 text-blue-700"
                 >
-                  {tag} ×
+                  {formData.category}
                 </Badge>
-              ))}
+              )}
+              {!formData.category && (
+                <p className="text-gray-500 text-sm">Select a category above to automatically set the tag</p>
+              )}
             </div>
           </div>
 
@@ -245,7 +215,7 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
             <Button
               type="submit"
               disabled={isLoading || isLoadingYouTube}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg"
             >
               {isLoading ? 'Saving...' : video ? 'Update Video' : 'Add Video'}
             </Button>

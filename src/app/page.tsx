@@ -270,11 +270,11 @@ export default function Home() {
                     </div>
                   )}
                 </CardHeader>
-                <CardContent className="px-1 py-0.5">
-                  <CardTitle className="text-black text-xs font-medium line-clamp-1 word-animate" data-delay="0">
+                <CardContent className="px-1 py-0">
+                  <CardTitle className="text-black text-xs font-medium line-clamp-1 word-animate mb-0" data-delay="0">
                     {video.title}
                   </CardTitle>
-                  <CardDescription className="text-black text-xs line-clamp-1">
+                  <CardDescription className="text-black text-xs line-clamp-1 mb-0">
                     {video.description}
                   </CardDescription>
                   <div className="flex justify-end">
@@ -288,18 +288,12 @@ export default function Home() {
           </div>
           ) : (
             <div className="text-center py-20">
-              <div className="text-6xl mb-4">🎬</div>
               <h3 className="text-2xl font-semibold text-black mb-2">
-                {searchTerm || selectedCategory !== 'All' ? 'No videos found' : 'No videos yet'}
+                No videos found
               </h3>
-              <p className="text-black mb-6">
-                {searchTerm || selectedCategory !== 'All'
-                  ? 'Try adjusting your search or category filter'
-                  : 'Be the first to add a video to the directory!'}
+              <p className="text-black">
+                Try adjusting your search or category filter
               </p>
-              <Button onClick={handleAddVideo} className="bg-blue-600 hover:bg-blue-700">
-                Add First Video
-              </Button>
             </div>
           )}
         </div>

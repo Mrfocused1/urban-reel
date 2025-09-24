@@ -237,33 +237,32 @@ export default function AdminPage() {
                     </div>
                   )}
                 </CardHeader>
-                <CardContent className="px-1 py-0.5">
-                  <CardTitle className="text-black text-xs font-medium line-clamp-1 word-animate" data-delay="0">
+                <CardContent className="px-1 py-0">
+                  <CardTitle className="text-black text-xs font-medium line-clamp-1 word-animate mb-0" data-delay="0">
                     {video.title}
                   </CardTitle>
-                  <CardDescription className="text-black text-xs line-clamp-1">
+                  <CardDescription className="text-black text-xs line-clamp-1 mb-0">
                     {video.description}
                   </CardDescription>
-                  <div className="flex justify-end mb-0.5">
+                  <div className="flex justify-end mb-0">
                     <span className="text-black text-xs">
                       {video.createdAt?.toDate().toLocaleDateString()}
                     </span>
                   </div>
 
                   {/* Admin Actions */}
-                  <div className="flex gap-0.5" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex gap-0.5 mt-0.5" onClick={(e) => e.stopPropagation()}>
                     <Button
                       onClick={() => handleEditVideo(video)}
                       size="sm"
-                      className="flex-1 bg-blue-100 border-blue-500 text-black hover:bg-blue-200 text-xs py-0.5 h-5"
+                      className="flex-1 bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg text-xs py-0.5 h-5"
                     >
                       Edit
                     </Button>
                     <Button
                       onClick={() => handleDeleteVideo(video)}
                       size="sm"
-                      variant="destructive"
-                      className="flex-1 bg-red-100 border-red-500 text-black hover:bg-red-200 text-xs py-0.5 h-5"
+                      className="flex-1 bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg text-xs py-0.5 h-5"
                     >
                       Delete
                     </Button>
@@ -274,7 +273,6 @@ export default function AdminPage() {
           </div>
           ) : (
             <div className="text-center py-20">
-              <div className="text-6xl mb-4">🎬</div>
               <h3 className="text-2xl font-semibold text-black mb-2">
                 {searchTerm ? 'No videos found' : 'No videos yet'}
               </h3>
@@ -283,7 +281,7 @@ export default function AdminPage() {
                   ? 'Try adjusting your search terms'
                   : 'Add your first video to get started!'}
               </p>
-              <Button onClick={handleAddVideo} className="bg-blue-600 hover:bg-blue-700">
+              <Button onClick={handleAddVideo} className="bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg transition-all">
                 Add First Video
               </Button>
             </div>
