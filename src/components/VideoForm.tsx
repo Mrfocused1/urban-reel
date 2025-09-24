@@ -35,6 +35,18 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingYouTube, setIsLoadingYouTube] = useState(false)
 
+  const clearFormData = () => {
+    const defaultCategory = categories[0] || ''
+    setFormData({
+      title: '',
+      description: '',
+      videoUrl: '',
+      category: defaultCategory,
+      tags: defaultCategory ? [defaultCategory] : [],
+      thumbnail: ''
+    })
+  }
+
   useEffect(() => {
     if (video) {
       setFormData({
@@ -46,12 +58,13 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
         thumbnail: video.thumbnail || ''
       })
     } else {
+      const defaultCategory = categories[0] || ''
       setFormData({
         title: '',
         description: '',
         videoUrl: '',
-        category: '',
-        tags: [],
+        category: defaultCategory,
+        tags: defaultCategory ? [defaultCategory] : [],
         thumbnail: ''
       })
     }
@@ -112,8 +125,16 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
     }
   }
 
+  const handleOpenChange = (isOpen: boolean) => {
+    if (!isOpen && !video) {
+      // Clear form data when closing if it's a new video (not editing)
+      clearFormData()
+    }
+    onOpenChange(isOpen)
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-2xl w-full bg-white border-gray-200 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-black text-2xl">
@@ -202,23 +223,34 @@ export default function VideoForm({ video, open, onOpenChange, onVideoSaved }: V
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4">
+          <div className="flex justify-between items-center pt-4">
             <Button
               type="button"
               variant="outline"
-              onClick={() => onOpenChange(false)}
+              onClick={clearFormData}
               disabled={isLoading}
-              className="border-gray-300 text-black hover:bg-gray-100"
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              disabled={isLoading || isLoadingYouTube}
               className="bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg"
             >
-              {isLoading ? 'Saving...' : video ? 'Update Video' : 'Add Video'}
+              Clear Data
             </Button>
+            <div className="flex gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={isLoading}
+                className="border-gray-300 text-black hover:bg-gray-100"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={isLoading || isLoadingYouTube}
+                className="bg-white/20 border border-gray-200 text-black hover:bg-white/40 backdrop-blur-lg"
+              >
+                {isLoading ? 'Saving...' : video ? 'Update Video' : 'Add Video'}
+              </Button>
+            </div>
           </div>
         </form>
       </DialogContent>
