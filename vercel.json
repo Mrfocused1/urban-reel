@@ -1,32 +1,16 @@
 {
-  "buildCommand": "",
-  "outputDirectory": ".",
-  "installCommand": "",
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ],
+  "framework": "nextjs",
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
         {
-          "key": "Cache-Control",
-          "value": "no-cache, no-store, must-revalidate, max-age=0"
+          "key": "X-Frame-Options",
+          "value": "DENY"
         },
         {
-          "key": "Pragma",
-          "value": "no-cache"
-        },
-        {
-          "key": "Expires",
-          "value": "0"
-        },
-        {
-          "key": "X-Timestamp",
-          "value": "2025-09-23-16:15"
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
         }
       ]
     }
