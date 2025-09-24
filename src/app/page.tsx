@@ -174,14 +174,6 @@ export default function Home() {
               >
                 Admin
               </Link>
-              <Button
-                onClick={testConnection}
-                variant="outline"
-                size="sm"
-                className="bg-green-100 border-green-500 text-green-700 hover:bg-green-200"
-              >
-                Test Firebase
-              </Button>
             </div>
           </nav>
         </div>
@@ -276,11 +268,11 @@ export default function Home() {
                     </div>
                   )}
                 </CardHeader>
-                <CardContent className="p-1">
-                  <CardTitle className="text-black text-xs font-medium mb-0.5 line-clamp-1 word-animate" data-delay="0">
+                <CardContent className="p-0.5">
+                  <CardTitle className="text-black text-xs font-medium mb-0 line-clamp-1 word-animate" data-delay="0">
                     {video.title}
                   </CardTitle>
-                  <CardDescription className="text-black text-xs mb-1 line-clamp-1">
+                  <CardDescription className="text-black text-xs mb-0 line-clamp-1">
                     {video.description}
                   </CardDescription>
                   <div className="flex justify-end">
@@ -328,10 +320,6 @@ export default function Home() {
         onVideoSaved={handleVideoSaved}
       />
 
-      {/* Footer */}
-      <footer className="relative z-10 text-center py-8 text-black">
-        <p>&copy; 2024 Urban Directory. Modern Video Directory with Firebase.</p>
-      </footer>
 
       {/* Toast Notifications */}
       <Toaster />

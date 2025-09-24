@@ -153,7 +153,7 @@ export default function DigitalSerenityEffects() {
         }
 
         .word-animate:hover {
-          color: #cbd5e1;
+          color: #000000;
           transform: translateY(-2px);
         }
 
@@ -172,14 +172,6 @@ export default function DigitalSerenityEffects() {
           animation: pulse-glow 3s ease-in-out infinite;
         }
 
-        .corner-element-animate {
-          position: absolute;
-          width: 40px;
-          height: 40px;
-          border: 1px solid rgba(100, 116, 139, 0.3);
-          opacity: 0;
-          animation: word-appear 1s ease-out forwards;
-        }
 
         .text-decoration-animate {
           position: relative;
@@ -242,19 +234,6 @@ export default function DigitalSerenityEffects() {
         <circle cx="50%" cy="50%" r="1.5" className="detail-dot" style={{ animationDelay: '4s' }} />
       </svg>
 
-      {/* Corner Elements */}
-      <div className="corner-element-animate top-4 left-4 sm:top-6 sm:left-6 md:top-8 md:left-8" style={{ animationDelay: '4s' }}>
-        <div className="absolute top-0 left-0 w-2 h-2 bg-slate-500 opacity-40 rounded-full"></div>
-      </div>
-      <div className="corner-element-animate top-4 right-4 sm:top-6 sm:right-6 md:top-8 md:right-8" style={{ animationDelay: '4.2s' }}>
-        <div className="absolute top-0 right-0 w-2 h-2 bg-slate-300 opacity-30 rounded-full"></div>
-      </div>
-      <div className="corner-element-animate bottom-4 left-4 sm:bottom-6 sm:left-6 md:bottom-8 md:left-8" style={{ animationDelay: '4.4s' }}>
-        <div className="absolute bottom-0 left-0 w-2 h-2 bg-slate-300 opacity-30 rounded-full"></div>
-      </div>
-      <div className="corner-element-animate bottom-4 right-4 sm:bottom-6 sm:right-6 md:bottom-8 md:right-8" style={{ animationDelay: '4.6s' }}>
-        <div className="absolute bottom-0 right-0 w-2 h-2 bg-slate-300 opacity-30 rounded-full"></div>
-      </div>
 
       {/* Floating Elements */}
       <div className="floating-element-animate" style={{ top: '25%', left: '15%', animationDelay: '0.5s' }}></div>

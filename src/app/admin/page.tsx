@@ -155,24 +155,10 @@ export default function AdminPage() {
       <DigitalSerenityEffects />
 
       {/* Header */}
-      <header className="relative z-10 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-4xl font-bold text-black mb-2 text-decoration-animate">
-                <span className="word-animate" data-delay="0">Admin</span>
-                <span className="word-animate" data-delay="200"> </span>
-                <span className="word-animate" data-delay="400">Dashboard</span>
-              </h1>
-              <p className="text-black">
-                <span className="word-animate" data-delay="600">Manage</span>
-                <span className="word-animate" data-delay="700">your</span>
-                <span className="word-animate" data-delay="800">video</span>
-                <span className="word-animate" data-delay="900">directory</span>
-              </p>
-            </div>
-
-            <div className="flex gap-4">
+      <header className="relative z-10 p-4 animate-blur-in">
+        <div className="container mx-auto">
+          <nav className="flex items-center justify-end mb-4">
+            <div className="flex items-center gap-4">
               <Link href="/">
                 <Button
                   variant="outline"
@@ -181,7 +167,39 @@ export default function AdminPage() {
                   ← Back to Site
                 </Button>
               </Link>
+            </div>
+          </nav>
+        </div>
+      </header>
 
+      {/* Hero Section */}
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <div className="text-center py-4 sm:py-8 mb-4">
+          <h1 className="text-black text-3xl sm:text-4xl md:text-6xl font-bold mb-1">
+            Admin Dashboard
+          </h1>
+          <p className="text-lg sm:text-xl text-black mb-4 max-w-2xl mx-auto px-4">
+            Manage your video directory
+          </p>
+
+          {/* Search Bar with Add Video Button */}
+          <div className="max-w-2xl mx-auto mb-2 sm:mb-4 px-4">
+            <div className="relative">
+              <Input
+                type="text"
+                placeholder="Search videos to manage..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full h-12 px-4 pr-12 bg-white/80 backdrop-blur-lg border border-blue-600/30 text-black placeholder:text-gray-500 focus:outline-none focus:border-blue-600 focus:shadow-[0_0_20px_rgba(30,64,175,0.3)] transition-all duration-300"
+              />
+              <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-600 hover:text-blue-400 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.35-4.35"></path>
+                </svg>
+              </button>
+            </div>
+            <div className="flex justify-center mt-4">
               <Button
                 onClick={handleAddVideo}
                 className="bg-blue-600 hover:bg-blue-700"
@@ -190,97 +208,54 @@ export default function AdminPage() {
               </Button>
             </div>
           </div>
-
-          {/* Admin Search Bar */}
-          <div className="max-w-2xl mx-auto mb-8">
-            <Input
-              type="text"
-              placeholder="Search videos to manage..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white/80 border-gray-300 text-black placeholder:text-gray-500 text-lg py-6"
-            />
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <Card className="bg-white/90 border-gray-300 backdrop-blur-sm">
-              <CardContent className="p-6">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-400 mb-2">{videos.length}</div>
-                  <div className="text-black">Total Videos</div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-white/90 border-gray-300 backdrop-blur-sm">
-              <CardContent className="p-6">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-green-400 mb-2">{filteredVideos.length}</div>
-                  <div className="text-black">Filtered Results</div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-white/90 border-gray-300 backdrop-blur-sm">
-              <CardContent className="p-6">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-purple-400 mb-2">{user ? 'Online' : 'Offline'}</div>
-                  <div className="text-black">Status</div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
         </div>
-      </header>
 
-      {/* Video Grid */}
-      <main className="relative z-10 max-w-7xl mx-auto px-6 pb-12">
-        {isLoading ? (
-          <div className="text-center py-20">
-            <div className="text-black text-xl">Loading videos...</div>
-          </div>
-        ) : filteredVideos.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {/* Video Grid */}
+        <div className="relative z-10 px-1 sm:px-4 animate-fade-in">
+          {isLoading ? (
+            <div className="text-center py-20">
+              <div className="text-black text-xl">Loading videos...</div>
+            </div>
+          ) : filteredVideos.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4 lg:gap-6">
             {filteredVideos.map((video) => (
               <Card
                 key={video.id}
-                className="bg-white/50 border border-gray-200 hover:bg-white/70 transition-all"
+                className="bg-white/50 border border-gray-200 hover:bg-white/70 transition-all cursor-pointer"
+                onClick={() => handleVideoClick(video)}
               >
                 <CardHeader className="p-0">
                   {getThumbnailUrl(video) ? (
                     <img
                       src={getThumbnailUrl(video)!}
                       alt={video.title}
-                      className="aspect-video w-full object-cover rounded-t-lg bg-black opacity-100 cursor-pointer"
-                      onClick={() => handleVideoClick(video)}
+                      className="aspect-video w-full object-cover rounded-t-lg bg-black opacity-100"
                     />
                   ) : (
-                    <div
-                      className="aspect-video bg-gray-700 rounded-t-lg flex items-center justify-center cursor-pointer"
-                      onClick={() => handleVideoClick(video)}
-                    >
+                    <div className="aspect-video bg-gray-700 rounded-t-lg flex items-center justify-center">
                       <span className="text-gray-400">🎬</span>
                     </div>
                   )}
                 </CardHeader>
-                <CardContent className="p-1">
-                  <CardTitle className="text-black text-sm mb-0.5 line-clamp-1 word-animate" data-delay="0">
+                <CardContent className="p-0.5">
+                  <CardTitle className="text-black text-xs font-medium mb-0 line-clamp-1 word-animate" data-delay="0">
                     {video.title}
                   </CardTitle>
-                  <CardDescription className="text-black mb-1 line-clamp-1">
+                  <CardDescription className="text-black text-xs mb-0 line-clamp-1">
                     {video.description}
                   </CardDescription>
-                  <div className="flex justify-end mb-1">
-                    <span className="text-black text-sm">
+                  <div className="flex justify-end mb-0.5">
+                    <span className="text-black text-xs">
                       {video.createdAt?.toDate().toLocaleDateString()}
                     </span>
                   </div>
 
                   {/* Admin Actions */}
-                  <div className="flex gap-1">
+                  <div className="flex gap-0.5" onClick={(e) => e.stopPropagation()}>
                     <Button
                       onClick={() => handleEditVideo(video)}
                       size="sm"
-                      className="flex-1 bg-blue-100 border-blue-500 text-black hover:bg-blue-200"
+                      className="flex-1 bg-blue-100 border-blue-500 text-black hover:bg-blue-200 text-xs py-0.5 h-6"
                     >
                       Edit
                     </Button>
@@ -288,7 +263,7 @@ export default function AdminPage() {
                       onClick={() => handleDeleteVideo(video)}
                       size="sm"
                       variant="destructive"
-                      className="flex-1 bg-red-100 border-red-500 text-black hover:bg-red-200"
+                      className="flex-1 bg-red-100 border-red-500 text-black hover:bg-red-200 text-xs py-0.5 h-6"
                     >
                       Delete
                     </Button>
@@ -297,22 +272,23 @@ export default function AdminPage() {
               </Card>
             ))}
           </div>
-        ) : (
-          <div className="text-center py-20">
-            <div className="text-6xl mb-4">🎬</div>
-            <h3 className="text-2xl font-semibold text-black mb-2">
-              {searchTerm ? 'No videos found' : 'No videos yet'}
-            </h3>
-            <p className="text-black mb-6">
-              {searchTerm
-                ? 'Try adjusting your search terms'
-                : 'Add your first video to get started!'}
-            </p>
-            <Button onClick={handleAddVideo} className="bg-blue-600 hover:bg-blue-700">
-              Add First Video
-            </Button>
-          </div>
-        )}
+          ) : (
+            <div className="text-center py-20">
+              <div className="text-6xl mb-4">🎬</div>
+              <h3 className="text-2xl font-semibold text-black mb-2">
+                {searchTerm ? 'No videos found' : 'No videos yet'}
+              </h3>
+              <p className="text-black mb-6">
+                {searchTerm
+                  ? 'Try adjusting your search terms'
+                  : 'Add your first video to get started!'}
+              </p>
+              <Button onClick={handleAddVideo} className="bg-blue-600 hover:bg-blue-700">
+                Add First Video
+              </Button>
+            </div>
+          )}
+        </div>
       </main>
 
       {/* Video Player Modal */}
